@@ -42,9 +42,10 @@ class CSVStream(Stream):
 
         self.logger.info(f"schema---{schema}")
 
-        date_columns = self._get_date_columns(schema)  # Identify date columns
-
-        self.logger.info(f"date_columns---{date_columns}")
+        date_columns = self._get_date_columns(schema)
+        int_columns = self._get_columns_by_type(schema, "integer")
+        double_columns = self._get_columns_by_type(schema, "double")
+        string_columns = self._get_columns_by_type(schema, "string")
 
         for file_path in self.get_file_paths():
             file_last_modified = datetime.fromtimestamp(
@@ -62,13 +63,55 @@ class CSVStream(Stream):
                 if self.config.get("add_metadata_columns", False):
                     row = [file_path, file_last_modified, file_lineno, *row]
 
-                # Apply date transformation for date columns
-                row_dict = dict(zip(self.header, row))
-                for date_col in date_columns:
-                    if date_col in row_dict:
-                        row_dict[date_col] = self._transform_date(row_dict[date_col])
+                # # Apply date transformation for date columns
+                # row_dict = dict(zip(self.header, row))
+                # for date_col in date_columns:
+                #     if date_col in row_dict:
+                #         row_dict[date_col] = self._transform_date(row_dict[date_col])
+                #
+                #
+                # for int_col in int_columns:
+                #     if int_col in row_dict:
+                #         row_dict[int_col] = int(row_dict[int_col])
+                #
+                # for dob_col in double_columns:
+                #     if dob_col in row_dict:
+                #         row_dict[dob_col] = int(row_dict[dob_col])
+                #
+                # for str_col in string_columns:
+                #     if dob_col in row_dict:
+                #         row_dict[str_col] = str(row_dict[str_col])
 
+
+                self._apply_transformations(row_dict, date_columns, int_columns, double_columns, string_columns)
                 yield row_dict
+
+    def _apply_transformations(self, row_dict: dict, date_columns: list[str], int_columns: list[str],
+                               double_columns: list[str], string_columns: list[str]) -> None:
+        """Apply necessary transformations to the row based on column type."""
+        for col in date_columns:
+            if col in row_dict:
+                row_dict[col] = self._transform_date(row_dict[col])
+
+        for col in int_columns:
+            if col in row_dict:
+                row_dict[col] = self._safe_cast(row_dict[col], int)
+
+        for col in double_columns:
+            if col in row_dict:
+                row_dict[col] = self._safe_cast(row_dict[col], float)
+
+        for col in string_columns:
+            if col in row_dict:
+                row_dict[col] = str(row_dict[col])
+
+    def _safe_cast(self, value: str, target_type: t.Type) -> t.Any:
+        """Safely cast a value to the target type."""
+        try:
+            return target_type(value)
+        except ValueError:
+            self.logger.warning(f"Failed to cast {value} to {target_type}")
+            return value
 
     def _get_recursive_file_paths(self, file_path: str) -> list:
         file_paths = []
@@ -98,6 +141,15 @@ class CSVStream(Stream):
             if "string" in field_schema.get("type", []) and field_schema.get("format") == "date":
                 date_columns.append(field)
         return date_columns
+
+
+    def _get_columns_by_type(self, schema: dict, data_type: str) -> list[str]:
+        """Extract columns from the schema that match the specified data type."""
+        return [
+            field
+            for field, field_schema in schema.get("properties", {}).items()
+            if data_type in field_schema.get("type", [])
+        ]
 
     def get_file_paths(self) -> list:
         """Return a list of file paths to read.
