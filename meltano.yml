@@ -1,0 +1,38 @@
+version: 1
+send_anonymous_usage_stats: true
+project_id: tap-csv
+plugins:
+  extractors:
+  - name: tap-csv
+    namespace: tap_csv
+    capabilities:
+    - state
+    - catalog
+    - discover
+    config:
+      files:
+      - entity: alphabet
+        file: alphabet.csv
+        path: ./tap_csv/tests/data/
+        keys:
+        - UNIQUE
+      add_metadata_columns: false
+    settings:
+      - name: files
+        description: Array of objects containing keys - `entity`, `path`, `keys`, `encoding` (Optional), `delimiter` (Optional), `doublequote` (Optional), `escapechar` (Optional), `quotechar` (Optional), `skipinitialspace` (Optional), `strict` (Optional)
+        kind: array
+      - name: csv_files_definition
+        description: "Project-relative path to JSON file holding array of objects with keys: `entity`, `path`, `keys`, and `encoding` (Optional)."
+        documentation: https://gitlab.com/meltano/tap-csv#run
+        label: CSV Files Definition
+        placeholder: Ex. files-def.json
+      - name: add_metadata_columns
+        description: When True, add the metadata columns (`_sdc_source_file`, `_sdc_source_file_mtime`, `_sdc_source_lineno`) to output.
+        kind: boolean
+      - name: date_fields
+        description: List of date_fields in the csv that need to be parsed to standard yyyy-mm-dd format
+        kind: array
+  loaders:
+  - name: target-jsonl
+    variant: andyh1203
+    pip_url: target-jsonl
