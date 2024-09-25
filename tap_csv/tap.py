@@ -56,24 +56,14 @@ class TapCSV(Tap):
             ),
         ),
         th.Property(
-            "date_fields",
-            th.ArrayType(
-                th.StringType,  # Each element in the array is a string representing a date field name
-            ),
-            required=False,
-            default=[],  # Provide a default value of an empty list
-            description="An array of column names whose values need to be parsed into the standard YYYY-MM-DD format.",
-        ),
-        th.Property(
             "custom_mappings",
             th.ArrayType(
                 th.ObjectType(
                     th.Property("key", th.StringType, required=True),
                     th.Property("data_type", th.StringType, required=True),
-                    th.Property("format", th.ArrayType(th.StringType), required=False),
                 )
             ),
-            description="An array of custom mappings for csv columns.",
+            description="An array of custom mapping settings for csv columns.",
         ),
     ).to_dict()
 

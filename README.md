@@ -20,7 +20,7 @@ Note: This tap currently does not support incremental state.
 | files               | False    | None    | An array of csv file stream settings. |
 | csv_files_definition| False    | None    | A path to the JSON file holding an array of file settings. |
 | add_metadata_columns| False    | False   | When True, add the metadata columns (`_sdc_source_file`, `_sdc_source_file_mtime`, `_sdc_source_lineno`) to output. |
-| date_fields					| False		 | None    | An array of column names whose values need to be parsed into the standard YYYY-MM-DD format.	|
+| custom_mappings			| False		 | None    | An array of custom mapping settings for csv columns.	|
 
 A full list of supported settings and capabilities is available by running: `tap-csv --about`
 

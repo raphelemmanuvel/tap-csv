@@ -39,9 +39,6 @@ class CSVStream(Stream):
         """
         schema = self.schema  # Get schema from the catalog
 
-
-        self.logger.info(f"schema---{schema}")
-
         date_columns = self._get_date_columns(schema)
         int_columns = self._get_columns_by_type(schema, "integer")
         double_columns = self._get_columns_by_type(schema, "double")
@@ -65,24 +62,6 @@ class CSVStream(Stream):
 
                 # # Apply date transformation for date columns
                 row_dict = dict(zip(self.header, row))
-                # for date_col in date_columns:
-                #     if date_col in row_dict:
-                #         row_dict[date_col] = self._transform_date(row_dict[date_col])
-                #
-                #
-                # for int_col in int_columns:
-                #     if int_col in row_dict:
-                #         row_dict[int_col] = int(row_dict[int_col])
-                #
-                # for dob_col in double_columns:
-                #     if dob_col in row_dict:
-                #         row_dict[dob_col] = int(row_dict[dob_col])
-                #
-                # for str_col in string_columns:
-                #     if dob_col in row_dict:
-                #         row_dict[str_col] = str(row_dict[str_col])
-
-
                 self._apply_transformations(row_dict, date_columns, int_columns, double_columns, string_columns)
                 yield row_dict
 
