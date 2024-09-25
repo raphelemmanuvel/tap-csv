@@ -60,7 +60,6 @@ class CSVStream(Stream):
                 if self.config.get("add_metadata_columns", False):
                     row = [file_path, file_last_modified, file_lineno, *row]
 
-                # # Apply date transformation for date columns
                 row_dict = dict(zip(self.header, row))
                 self._apply_transformations(row_dict, date_columns, int_columns, double_columns, string_columns)
                 yield row_dict
