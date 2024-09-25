@@ -1,0 +1,57 @@
+[tool.poetry]
+name = "tap-csv"
+version = "1.1.0"
+description = "Singer tap for CSV, built with the Meltano SDK for Singer Taps."
+authors = ["Pat Nadolny"]
+keywords = [
+    "ELT",
+    "CSV",
+]
+license = "Apache-2.0"
+
+[tool.poetry.dependencies]
+python = ">=3.8"
+singer-sdk = "~=0.40.0"
+
+[tool.poetry.group.dev.dependencies]
+coverage = ">=7.2"
+mypy = ">=1.4"
+pytest = ">=7.4.4"
+ruff = ">=0.1.15"
+types-requests = ">=2.31.0"
+
+[build-system]
+requires = ["poetry-core==1.9.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+# CLI declaration
+tap-csv = 'tap_csv.tap:TapCSV.cli'
+
+[tool.ruff]
+line-length = 88
+target-version = "py38"
+
+[tool.ruff.lint]
+ignore = [
+    "COM812",
+    "D105",
+    "D203",
+    "D213",
+]
+select = [
+    "A",
+    "B",
+    "W",
+    "D",
+    "COM",
+    "I",
+    # "PTH",
+    "PERF",
+    "RUF",
+    "TCH",
+    "UP",
+]
+
+[tool.ruff.lint.isort]
+required-imports = ["from __future__ import annotations"]
