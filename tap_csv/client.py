@@ -64,7 +64,7 @@ class CSVStream(Stream):
                     row = [file_path, file_last_modified, file_lineno, *row]
 
                 # # Apply date transformation for date columns
-                # row_dict = dict(zip(self.header, row))
+                row_dict = dict(zip(self.header, row))
                 # for date_col in date_columns:
                 #     if date_col in row_dict:
                 #         row_dict[date_col] = self._transform_date(row_dict[date_col])
