@@ -39,7 +39,13 @@ class CSVStream(Stream):
         """
         schema = self.schema  # Get schema from the catalog
 
+
+        self.logger.info(f"schema---{schema}")
+
         date_columns = self._get_date_columns(schema)  # Identify date columns
+
+        self.logger.info(f"date_columns---{date_columns}")
+
         for file_path in self.get_file_paths():
             file_last_modified = datetime.fromtimestamp(
                 os.path.getmtime(file_path), timezone.utc
@@ -184,7 +190,7 @@ class CSVStream(Stream):
                 elif mapping["data_type"] == "string":
                     properties.append(th.Property(column, th.StringType()))
             else:
-                # Default to string type if no mapping is found for the column                
+                # Default to string type if no mapping is found for the column
                 properties.append(th.Property(column, th.StringType()))
 
         # If enabled, add file's metadata to output
