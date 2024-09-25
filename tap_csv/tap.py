@@ -55,6 +55,15 @@ class TapCSV(Tap):
                 "`_sdc_source_file_mtime`, `_sdc_source_lineno`) to output."
             ),
         ),
+        th.Property(
+            "date_fields",
+            th.ArrayType(
+                th.StringType,  # Each element in the array is a string representing a date field name
+            ),
+            required=False,
+            default=[],  # Provide a default value of an empty list
+            description="An array of column names whose values need to be parsed into the standard YYYY-MM-DD format.",
+        ),
     ).to_dict()
 
     @classproperty
