@@ -32,6 +32,9 @@ plugins:
       - name: date_fields
         description: List of date_fields in the csv that need to be parsed to standard yyyy-mm-dd format
         kind: array
+      - name: custom_mappings
+        description: Array of objects containing keys - `key`, `data_type`, `format`(Optional)
+        kind: array
   loaders:
   - name: target-jsonl
     variant: andyh1203

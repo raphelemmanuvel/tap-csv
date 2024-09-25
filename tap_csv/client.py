@@ -159,18 +159,32 @@ class CSVStream(Stream):
         self.primary_keys = self.file_config.get("keys", [])
 
 
-        date_fields = self.config.get("date_fields", [])
+        custom_mappings = self.config.get("custom_mappings", [])
 
         for file_path in self.get_file_paths():
             for header in self.get_rows(file_path):  # noqa: B007
                 break
             break
 
-        # Check each column header and assign date format if it's in the hardcoded list
+        # Check each column header and assign date format if it's in the config list
         for column in header:
-            if date_fields is not None and column in date_fields:
-                properties.append(th.Property(column, th.DateType()))
+
+            mapping = next((item for item in custom_mappings if item['key'] == column), None)
+            if mapping is not None:
+
+                if mapping["data_type"] == "date":
+                    properties.append(th.Property(column, th.DateType()))
+
+                elif mapping["data_type"] == "integer":
+                    properties.append(th.Property(column, th.IntegerType()))
+
+                elif mapping["data_type"] == "double":
+                    properties.append(th.Property(column, th.DoubleType()))
+
+                elif mapping["data_type"] == "string":
+                    properties.append(th.Property(column, th.StringType()))
             else:
+                # Default to string type if no mapping is found for the column                
                 properties.append(th.Property(column, th.StringType()))
 
         # If enabled, add file's metadata to output
